@@ -1,0 +1,5 @@
+#!/bin/bash
+
+echo -ne "\x5a\x00\x20\x80\x80\x80\x80" > /dev/ttyACM0
+sleep 0.05
+echo -ne "\x5a\x00\x00\x80\x80\x80\x80" > /dev/ttyACM0
