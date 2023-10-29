@@ -1,0 +1,53 @@
+Final Fantasy X Auto Lightning Dodge
+
+Repo to share some hacky scripts to help auto-play the awful lightning dodge minigame required to unlock Lulu's Celestial Weapon sigil in Final Fantasy X.
+
+This is all very crude and nothing to be proud of as a programmer - after I got it working I had no desire to clean it up and continue testing, but thought I might as well share.
+
+The Python script ffx.py monitors the attached webcam and attempts to detect lightning flashes by monitoring an 8x8 grid of pixels. Then, it invokes the bash scripts in order to send a serial interface instruction to the Teensy to simulate an 'X' press. Because the character moves when he dodges a strike, the script then moves the character forward a small way by simulating a longer 'Up' press, as otherwise, the character can be backed into an area where lightning doesn't strike. As a backup mitigation, the same forward movement is invoked if the script runs for some time with no lightning detected (or since having previously moved).
+
+You might think; "Hang on - can't the X press interfere with the character movement if it happens to be running at the same time (since the movement process is spun up in the background)?" - and you'd be quite right. For this frivolous application, my solution was to hope it wouldn't be a problem. :)
+
+N.B. You will need to modify some hard-coded paths (and possibly other things such as the path to the serial interface) in these scripts.
+
+You will need:
+* FFX running on a PS2, and equipped gear with the 'No Encounters' ability
+* A webcam
+* A Teensy 2.0 development board
+* A Linux machine with the Arduino SDK installed - itself with Teensy extensions installed
+* Python3 and its opencv module
+* A severed and stripped cable harvested from a PS2 controller
+* Some means of connecting the controller wires to the Teensy
+    * (Recommend soldering the thin cables to a short length of thicker solid-core wire which can be connected to the board via a female pin header)
+* The Teensy firmware and information (particularly wiring diagram) available here: http://procrastineering.blogspot.com/2010/12/simulated-ps2-controller-for.html
+    * (Many thanks to Johnny Chung Lee!)
+* The scripts in this repo
+* Patience and luck!
+
+Instructions:
+
+* Cut the cable off a PS2 controller and cut the cables back to expose the wires
+    * Apparently colours can vary if not using an official DualShock2
+    * I found that the DualShock2 sheaths can be tough and the wires thin and frail - use good wire strippers!
+* Connect these to the Teensy board as per the Procrastineering blog
+* Download the firmware from http://littlegreatideas.com/procrastineering/files/ps2_emulator/PS2Controller_Emulator_v2.zip
+* Install the compiled firmware onto the Teensy
+    * If you wish to build from source, you will need gcc-avr and use the Makefile to build
+    * I also needed to add some 'const' terms to keep the new version of the compiler happy...
+* Run the firmware on the Teensy
+    * This should cause a serial interface to appear - for me this was under /dev/ttyACM0
+* Fire up FFX and go to the Thunder Plains where lightning strikes (using a regular controller)
+* Swap to the Teensy-driven controller
+    * I found this sometimes caused the game menu to open for some reason
+    * If this happens, manually run send_o.sh - which should cause it to close
+        * If not, you'll need to determine the problem and fix it!
+* Run ffx.py
+* Align the webcam to point at the screen
+* The webcam preview shows where the sample pixels are - ensure these are neatly inside the screen area
+* Wait, and hope...!
+* After you think sufficient time has passed, switch back to a regular controller and run to the Thunder Plains travel agency to check your score!
+    * BE CAREFUL not to accidentally reset the console when switching controllers back :)
+
+The success rate isn't 100%, but with a bit of luck you'll end up with the required 200 consecutive dodges to claim your prize! After a couple of hours, it turned out I'd been on 594 strikes and counting, and had settled into a stable loop around the North-West area of Thunder Plains South.
+
+Good luck...!
